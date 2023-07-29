@@ -1,0 +1,54 @@
+.grab {
+  max-width: 750px;
+}
+
+.container {
+  display: flex;
+}
+
+#upload {
+  width: 300px;
+  border: 1px solid black;
+}
+
+#image-canvas {
+  max-width: 450px;
+  max-height: 450px;
+  display: block;
+}
+
+#output {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.wrapper {
+  width: 100px;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  border-radius: 20%;
+  box-shadow: 0 3px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.color {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.hex {
+  position: absolute;
+  font-size: 0.7rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.3rem;
+  border-radius: 5px;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.5);
+}
