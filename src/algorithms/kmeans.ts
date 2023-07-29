@@ -4,7 +4,7 @@ import { getRandomCentroid } from "../utils/utils";
 
 export const kmeans = (
   rgbValues: number[][],
-  K = 5,
+  K = 8,
   MAX_ITERATION = 50
 ): Promise<clusterType> => {
   let cluster: clusterType = {} as clusterType;
