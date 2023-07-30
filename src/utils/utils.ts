@@ -35,7 +35,7 @@ export const getRandomCentroid = (
   K: number
 ): number[][] => {
   const centroidIdx: number[] = [];
-  const centroid: number[][] = [];
+  const centroids: number[][] = [];
 
   while (centroidIdx.length < K) {
     const index = Math.floor(Math.random() * dataset.length);
@@ -45,8 +45,8 @@ export const getRandomCentroid = (
   }
 
   for (let i = 0; i < centroidIdx.length; i++) {
-    centroid.push(dataset[centroidIdx[i]]);
+    centroids.push(dataset[centroidIdx[i]]);
   }
 
-  return centroid;
+  return centroids;
 };

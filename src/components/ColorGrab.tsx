@@ -8,9 +8,10 @@ import { clusterType, rgbType } from "../types/utilTypes";
 import { kmeans } from "../algorithms/kmeans";
 import { colorChannelWithGreatestRange } from "../utils/utils";
 import { medianCutAlgorithm } from "../algorithms/quantize";
+import { compressImage } from "../algorithms/compress";
 
 function ColorGrab() {
-  const [colors, setColors] = useState<rgbType[]>([]);
+  const [colors, setColors] = useState<string[]>([]);
   const [ctx, setCtx] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const canvasRef: any = useRef(null);
@@ -22,9 +23,12 @@ function ColorGrab() {
     const img = new Image();
     img.src = imageUrl;
     img.onload = async () => {
-      canvasRef.current.width = img.width;
-      canvasRef.current.height = img.height;
-      ctx.drawImage(img, 0, 0);
+      const { width, height } = compressImage(img);
+      canvasRef.current.width = width;
+      canvasRef.current.height = height;
+
+      // Draw the resized image on the canvas
+      ctx.drawImage(img, 0, 0, width, height);
       const imageData = ctx.getImageData(
         0,
         0,
@@ -32,6 +36,7 @@ function ColorGrab() {
         canvasRef.current.height
       );
       const data = imageData.data;
+      // ALGORITHMS TO EXTRACT IMAGE'S COLOR
       //   const rgbValues = getRgbValuesKV(data);
       //   const channel = colorChannelWithGreatestRange(rgbValues);
       //   const colors = medianCutAlgorithm(rgbValues, channel as keyof rgbType);
@@ -41,9 +46,9 @@ function ColorGrab() {
       console.log(cluster);
       const val = cluster.labels.map((label: any) => {
         const [r, g, b] = label.centroid;
-        return { r, g, b };
+        return rgbToHex({ r, g, b });
       });
-      setColors(val);
+      setColors([...new Set(val)]);
       setIsLoading(false);
     };
   };
@@ -65,21 +70,16 @@ function ColorGrab() {
           />
           <div id="output">
             {colors.map((clr, i: number) => {
-              const { r, g, b } = clr;
-              const color = `rgb(${r},${g},${b})`;
               return (
                 <div
                   className="wrapper"
                   key={i}
                   onClick={() => {
-                    navigator.clipboard.writeText(color);
+                    navigator.clipboard.writeText(clr);
                   }}
                 >
-                  <div
-                    className="color"
-                    style={{ backgroundColor: color }}
-                  ></div>
-                  <span className="hex">{rgbToHex(clr).toUpperCase()}</span>
+                  <div className="color" style={{ backgroundColor: clr }}></div>
+                  <span className="hex">{clr.toUpperCase()}</span>
                 </div>
               );
             })}

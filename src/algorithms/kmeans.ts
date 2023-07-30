@@ -5,15 +5,15 @@ import { getRandomCentroid } from "../utils/utils";
 export const kmeans = (
   rgbValues: number[][],
   K = 8,
-  MAX_ITERATION = 50
+  MAX_ITERATION = 100
 ): Promise<clusterType> => {
   let cluster: clusterType = {} as clusterType;
-  // TODO: find random centroid efficiently
-  let centroids = getRandomCentroid(rgbValues, K);
+  let centroids: number[][] = getRandomCentroid(rgbValues, K);
+
   let labels = getLabelsWithNearestPoints(rgbValues, centroids);
   cluster = { labels, iterations: 0 };
   let oldCentroids = centroids;
-
+  let counter = 0;
   for (let i = 1; i < MAX_ITERATION; i++) {
     centroids = labels.map((label) => {
       return calculateCentroid(label.points, label.centroid);
@@ -24,6 +24,7 @@ export const kmeans = (
     oldCentroids = centroids;
     labels = getLabelsWithNearestPoints(rgbValues, centroids);
     cluster = { labels, iterations: i };
+    counter++;
   }
 
   return Promise.resolve(cluster);
@@ -42,7 +43,7 @@ const getLabelsWithNearestPoints = (
   }
 
   for (let i = 0; i < dataset.length; i++) {
-    let minDistance = Number.MAX_VALUE;
+    let minDistance = Infinity;
     let nearestCentroidIdx = 0;
 
     for (let j = 0; j < centroids.length; j++) {
@@ -59,10 +60,14 @@ const getLabelsWithNearestPoints = (
   return labels;
 };
 
-const centriodHaveConverged = (oldV: number[][], newV: number[][]) => {
+const centriodHaveConverged = (oldV: number[][], newV: number[][]): boolean => {
   let converged = true;
   for (let i = 0; i < oldV.length; i++) {
-    if (oldV[0] !== newV[0] && oldV[1] !== newV[1] && oldV[2] !== newV[2]) {
+    if (
+      oldV[i][0] !== newV[i][0] &&
+      oldV[i][1] !== newV[i][1] &&
+      oldV[i][2] !== newV[i][2]
+    ) {
       converged = false;
     }
   }
