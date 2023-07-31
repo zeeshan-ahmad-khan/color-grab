@@ -1,32 +1,28 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  getRgbValuesArray,
-  getRgbValuesKV,
-  rgbToHex,
-} from "../utils/converter";
-import { clusterType, rgbType } from "../types/utilTypes";
+import { getRgbValuesArray, rgbToHex } from "../utils/converter";
+import { clusterType } from "../types/utilTypes";
 import { kmeans } from "../algorithms/kmeans";
-import { colorChannelWithGreatestRange } from "../utils/utils";
-import { medianCutAlgorithm } from "../algorithms/quantize";
 import { compressImage } from "../algorithms/compress";
 
 function ColorGrab() {
   const [colors, setColors] = useState<string[]>([]);
   const [ctx, setCtx] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string>("");
   const canvasRef: any = useRef(null);
 
   const handleFileChange = (e: any) => {
     setIsLoading(true);
     const file = e.target.files[0];
+    if (!file) setIsLoading(false);
     const imageUrl = URL.createObjectURL(file);
+    setImgUrl(imageUrl);
     const img = new Image();
     img.src = imageUrl;
     img.onload = async () => {
       const { width, height } = compressImage(img);
       canvasRef.current.width = width;
       canvasRef.current.height = height;
-
       // Draw the resized image on the canvas
       ctx.drawImage(img, 0, 0, width, height);
       const imageData = ctx.getImageData(
@@ -62,12 +58,15 @@ function ColorGrab() {
       {isLoading && <h1>LOADING...</h1>}
       <div className="container">
         <div className="outer">
-          <input
-            type="file"
-            accept="image/*"
-            id="upload"
-            onChange={handleFileChange}
-          />
+          <div className="input-group">
+            <button>Upload Image</button>
+            <input
+              type="file"
+              accept="image/*"
+              id="upload"
+              onChange={handleFileChange}
+            />
+          </div>
           <div id="output">
             {colors.map((clr, i: number) => {
               return (
@@ -84,6 +83,9 @@ function ColorGrab() {
               );
             })}
           </div>
+          {imgUrl !== "" && !isLoading && (
+            <img src={imgUrl} alt="uploaded image" className="display-image" />
+          )}
         </div>
         <canvas id="image-canvas" ref={canvasRef}></canvas>
       </div>
