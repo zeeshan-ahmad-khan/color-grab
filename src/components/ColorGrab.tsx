@@ -75,6 +75,7 @@ function ColorGrab() {
                   key={i}
                   onClick={() => {
                     navigator.clipboard.writeText(clr);
+                    alert("Color Copied!");
                   }}
                 >
                   <div className="color" style={{ backgroundColor: clr }}></div>

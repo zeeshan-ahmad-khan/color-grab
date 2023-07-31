@@ -13,12 +13,15 @@
 
 .input-group {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
 .input-group button {
   all: unset;
-  width: 100%;
+  width: 80%;
   height: 100%;
   border-radius: 10px;
   padding: 0.5rem;
