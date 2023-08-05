@@ -1,8 +1,10 @@
+import "./colorgrab.css";
 import { useEffect, useRef, useState } from "react";
-import { getRgbValuesArray, rgbToHex } from "../utils/converter";
-import { clusterType } from "../types/utilTypes";
-import { kmeans } from "../algorithms/kmeans";
-import { compressImage } from "../algorithms/compress";
+import { getRgbValuesArray, rgbToHex } from "../../utils/converter";
+import { clusterType } from "../../types/utilTypes";
+import { kmeans } from "../../algorithms/kmeans";
+import { compressImage } from "../../algorithms/compress";
+import Loader from "../Loader/Loader";
 
 function ColorGrab() {
   const [colors, setColors] = useState<string[]>([]);
@@ -55,39 +57,49 @@ function ColorGrab() {
 
   return (
     <div className="grab">
-      {isLoading && <h1>LOADING...</h1>}
       <div className="container">
-        <div className="outer">
-          <div className="input-group">
-            <button>Upload Image</button>
-            <input
-              type="file"
-              accept="image/*"
-              id="upload"
-              onChange={handleFileChange}
-            />
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <div className="outer">
+            <div className="input-group">
+              <button>Upload Image</button>
+              <input
+                type="file"
+                accept="image/*"
+                id="upload"
+                onChange={handleFileChange}
+              />
+            </div>
+            <div id="output">
+              {colors.map((clr, i: number) => {
+                return (
+                  <div
+                    className="wrapper"
+                    key={i}
+                    onClick={() => {
+                      navigator.clipboard.writeText(clr);
+                      alert(`${clr.toUpperCase()} Color Copied!`);
+                    }}
+                  >
+                    <div
+                      className="color"
+                      style={{ backgroundColor: clr }}
+                    ></div>
+                    <span className="hex">{clr.toUpperCase()}</span>
+                  </div>
+                );
+              })}
+            </div>
+            {imgUrl !== "" && !isLoading && (
+              <img
+                src={imgUrl}
+                alt="uploaded image"
+                className="display-image"
+              />
+            )}
           </div>
-          <div id="output">
-            {colors.map((clr, i: number) => {
-              return (
-                <div
-                  className="wrapper"
-                  key={i}
-                  onClick={() => {
-                    navigator.clipboard.writeText(clr);
-                    alert("Color Copied!");
-                  }}
-                >
-                  <div className="color" style={{ backgroundColor: clr }}></div>
-                  <span className="hex">{clr.toUpperCase()}</span>
-                </div>
-              );
-            })}
-          </div>
-          {imgUrl !== "" && !isLoading && (
-            <img src={imgUrl} alt="uploaded image" className="display-image" />
-          )}
-        </div>
+        )}
         <canvas id="image-canvas" ref={canvasRef}></canvas>
       </div>
     </div>
