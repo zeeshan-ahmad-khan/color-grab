@@ -41,7 +41,7 @@ function ColorGrab() {
       //   setColors(colors);
       const rgbValues: number[][] = getRgbValuesArray(data);
       const cluster: clusterType = await kmeans(rgbValues);
-      console.log(cluster);
+      // console.log(cluster);
       const val = cluster.labels.map((label: any) => {
         const [r, g, b] = label.centroid;
         return rgbToHex({ r, g, b });

@@ -1,5 +1,5 @@
 import "./footer.css";
-import { BsGithub } from "react-icons/bs";
+import { BsGithub, BsLinkedin } from "react-icons/bs";
 
 export default function Footer() {
   return (
@@ -8,6 +8,9 @@ export default function Footer() {
       <div className="social">
         <a href="https://github.com/zeeshan-ahmad-khan/color-grab">
           <BsGithub />
+        </a>
+        <a href="https://www.linkedin.com/in/zeeshan-ahmad-khan-178563170">
+          <BsLinkedin />
         </a>
       </div>
     </div>
